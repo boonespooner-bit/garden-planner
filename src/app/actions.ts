@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { and, eq } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { GuideLimitError, getOrCreateCustomGuide } from "@/lib/ai-guide";
-import { redeemLoginToken, requireUser, sendLoginLink, signOut, verifyUnsubscribeToken } from "@/lib/auth";
+import { redeemLoginToken, requireUser, sendLoginLink, signInWithPassword, signOut, verifyUnsubscribeToken } from "@/lib/auth";
 import { estimateClimate } from "@/lib/climate";
 import { buildDigest } from "@/lib/digest";
 import { sendEmail } from "@/lib/email";
@@ -34,6 +34,12 @@ export async function requestLoginAction(_: FormState, form: FormData): Promise<
 export async function redeemLoginAction(form: FormData) {
   const user = await redeemLoginToken(str(form, "token"));
   if (!user) redirect("/login?expired=1");
+  redirect(user.lastFrost ? "/dashboard" : "/onboarding/location");
+}
+
+export async function passwordLoginAction(_: FormState, form: FormData): Promise<FormState> {
+  const user = await signInWithPassword(str(form, "email"), String(form.get("password") ?? ""));
+  if (!user) return { error: "That email and password didn't match." };
   redirect(user.lastFrost ? "/dashboard" : "/onboarding/location");
 }
 

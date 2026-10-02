@@ -3,7 +3,7 @@
  * Only SHA-256 hashes of tokens are stored, so a database leak can't be replayed.
  */
 import "server-only";
-import { createHash, createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { and, eq, gt, isNull, sql } from "drizzle-orm";
@@ -77,10 +77,15 @@ export async function redeemLoginToken(token: string): Promise<User | null> {
     .returning();
   if (!row) return null;
 
+  return startSession(row.email);
+}
+
+/** Finds or creates the user for this email and sets a session cookie. */
+async function startSession(email: string): Promise<User> {
   const [user] = await db
     .insert(schema.users)
-    .values({ email: row.email })
-    .onConflictDoUpdate({ target: schema.users.email, set: { email: row.email } })
+    .values({ email })
+    .onConflictDoUpdate({ target: schema.users.email, set: { email } })
     .returning();
 
   const sessionToken = newToken();
@@ -95,6 +100,44 @@ export async function redeemLoginToken(token: string): Promise<User | null> {
     expires: expiresAt,
   });
   return user;
+}
+
+/* ---- Optional password sign-in (for testing before email is set up) ----
+ * Enabled only when both TEST_LOGIN_EMAIL and TEST_LOGIN_PASSWORD_HASH are set.
+ * Create the hash with `npm run hash-password`; the plain password is never stored.
+ */
+
+const MAX_PASSWORD_FAILURES = 10;
+const FAILURE_WINDOW_MS = 15 * 60_000;
+const passwordFailures: number[] = [];
+
+export function passwordLoginEnabled(): boolean {
+  return Boolean(process.env.TEST_LOGIN_EMAIL && process.env.TEST_LOGIN_PASSWORD_HASH);
+}
+
+function verifyPassword(password: string, stored: string): boolean {
+  const [salt, expectedHex] = stored.split(":");
+  if (!salt || !expectedHex) return false;
+  const expected = Buffer.from(expectedHex, "hex");
+  const actual = scryptSync(password, salt, expected.length);
+  return actual.length === expected.length && timingSafeEqual(actual, expected);
+}
+
+export async function signInWithPassword(rawEmail: string, password: string): Promise<User | null> {
+  if (!passwordLoginEnabled()) return null;
+  const now = Date.now();
+  while (passwordFailures.length && passwordFailures[0] < now - FAILURE_WINDOW_MS) passwordFailures.shift();
+  if (passwordFailures.length >= MAX_PASSWORD_FAILURES) return null;
+
+  const email = normalizeEmail(rawEmail);
+  const emailOk = email === normalizeEmail(process.env.TEST_LOGIN_EMAIL!);
+  // Always run the hash check so timing doesn't reveal whether the email matched.
+  const passwordOk = verifyPassword(password, process.env.TEST_LOGIN_PASSWORD_HASH!);
+  if (!emailOk || !passwordOk) {
+    passwordFailures.push(now);
+    return null;
+  }
+  return startSession(email);
 }
 
 export async function getCurrentUser(): Promise<User | null> {

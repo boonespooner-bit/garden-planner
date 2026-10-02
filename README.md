@@ -66,6 +66,8 @@ curl -X POST -H "Authorization: Bearer $CRON_SECRET" http://localhost:3000/api/c
 4. Register **tendweekly.com**, add it in Render → Settings → Custom domain, and set `APP_URL=https://tendweekly.com`.
 5. Emails need a domain you own: verify it in Resend so mail doesn't land in spam, and use it in `EMAIL_FROM` (e.g. `Tend Weekly <hello@tendweekly.com>`). Until then, Resend's test sender can only email your own address.
 
+**Testing before email works:** set `TEST_LOGIN_EMAIL` and `TEST_LOGIN_PASSWORD_HASH` (from `npm run hash-password -- 'your password'`) on the web service. A "Sign in with a password instead" option then appears on the sign-in page. Delete both variables to turn it off.
+
 Migrations run automatically on each deploy (`npm run db:migrate` in the start command).
 
 ## Notes on the plant advice

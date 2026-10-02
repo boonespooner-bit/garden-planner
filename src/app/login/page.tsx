@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth";
-import { LoginForm } from "./LoginForm";
+import { getCurrentUser, passwordLoginEnabled } from "@/lib/auth";
+import { LoginForm, PasswordLoginForm } from "./LoginForm";
 
 export const metadata = { title: "Sign in" };
 
@@ -24,6 +24,14 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       <div className="card">
         <LoginForm />
       </div>
+      {passwordLoginEnabled() && (
+        <details className="card">
+          <summary className="text-sm font-semibold text-leaf-700">Sign in with a password instead ▾</summary>
+          <div className="mt-4">
+            <PasswordLoginForm />
+          </div>
+        </details>
+      )}
     </div>
   );
 }
