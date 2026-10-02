@@ -1,0 +1,52 @@
+# Render Blueprint: Dashboard → New → Blueprint → pick this repo.
+databases:
+  - name: garden-db
+    plan: basic-256mb
+    databaseName: garden
+    user: garden
+
+services:
+  - type: web
+    name: garden-planner
+    runtime: node
+    plan: starter
+    buildCommand: npm ci && npm run build
+    startCommand: npm run db:migrate && npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: garden-db
+          property: connectionString
+      - key: AUTH_SECRET
+        generateValue: true
+      - key: CRON_SECRET
+        generateValue: true
+      - key: APP_URL # e.g. https://garden.aspooner.com
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: EMAIL_FROM # e.g. Garden Planner <garden@aspooner.com>
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+
+  # Hourly from Thursday to Saturday (UTC). The app only emails each user once,
+  # at or after 7am on Friday in their own timezone, so every timezone is covered.
+  - type: cron
+    name: garden-weekly-email
+    runtime: node
+    plan: starter
+    schedule: "5 * * * 4,5,6"
+    buildCommand: echo "no build needed"
+    startCommand: curl -fsS -X POST -H "Authorization: Bearer $CRON_SECRET" "$APP_URL/api/cron/weekly"
+    envVars:
+      - key: CRON_SECRET
+        fromService:
+          type: web
+          name: garden-planner
+          envVarKey: CRON_SECRET
+      - key: APP_URL
+        sync: false

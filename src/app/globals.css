@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #faf8f2;
+  --color-paper: #ffffff;
+  --color-ink: #1f2a1f;
+  --color-muted: #66705f;
+  --color-line: #e4e0d5;
+  --color-leaf-50: #eef5ec;
+  --color-leaf-100: #d9e9d4;
+  --color-leaf-500: #4a8a4f;
+  --color-leaf-700: #2f5d34;
+  --color-leaf-900: #1d3a21;
+  --color-clay: #b5552d;
+  --color-sun: #f2c14e;
+  --color-warn-bg: #fff6e8;
+  --color-warn: #8a4b00;
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+html {
+  background: var(--color-cream);
+  color: var(--color-ink);
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+details > summary {
+  list-style: none;
+  cursor: pointer;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+@layer components {
+  .card {
+    @apply rounded-xl border border-line bg-paper p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)];
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-leaf-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-leaf-900 disabled:cursor-wait disabled:opacity-60;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-line bg-paper px-4 py-2.5 text-sm font-semibold text-ink transition hover:border-leaf-500 hover:text-leaf-700;
+  }
+  .input {
+    @apply w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-base outline-none focus:border-leaf-500 focus:ring-2 focus:ring-leaf-100;
+  }
+  .label {
+    @apply mb-1 block text-sm font-semibold text-ink;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full bg-leaf-50 px-2.5 py-0.5 text-xs font-semibold text-leaf-700;
+  }
+}
