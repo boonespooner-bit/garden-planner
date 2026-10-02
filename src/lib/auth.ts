@@ -111,8 +111,23 @@ const MAX_PASSWORD_FAILURES = 10;
 const FAILURE_WINDOW_MS = 15 * 60_000;
 const passwordFailures: number[] = [];
 
+/** Reads an env var, ignoring stray whitespace or quotes picked up when pasting into a dashboard. */
+function envValue(name: string): string {
+  return (process.env[name] ?? "").trim().replace(/^["']|["']$/g, "").trim();
+}
+
 export function passwordLoginEnabled(): boolean {
-  return Boolean(process.env.TEST_LOGIN_EMAIL && process.env.TEST_LOGIN_PASSWORD_HASH);
+  return Boolean(envValue("TEST_LOGIN_EMAIL") && envValue("TEST_LOGIN_PASSWORD_HASH"));
+}
+
+/** Which test-login settings the server can see (booleans only, never values). */
+export function passwordLoginStatus() {
+  const hash = envValue("TEST_LOGIN_PASSWORD_HASH");
+  return {
+    emailSet: Boolean(envValue("TEST_LOGIN_EMAIL")),
+    hashSet: Boolean(hash),
+    hashLooksValid: /^[0-9a-f]{32}:[0-9a-f]{128}$/.test(hash),
+  };
 }
 
 function verifyPassword(password: string, stored: string): boolean {
@@ -130,9 +145,9 @@ export async function signInWithPassword(rawEmail: string, password: string): Pr
   if (passwordFailures.length >= MAX_PASSWORD_FAILURES) return null;
 
   const email = normalizeEmail(rawEmail);
-  const emailOk = email === normalizeEmail(process.env.TEST_LOGIN_EMAIL!);
+  const emailOk = email === normalizeEmail(envValue("TEST_LOGIN_EMAIL"));
   // Always run the hash check so timing doesn't reveal whether the email matched.
-  const passwordOk = verifyPassword(password, process.env.TEST_LOGIN_PASSWORD_HASH!);
+  const passwordOk = verifyPassword(password, envValue("TEST_LOGIN_PASSWORD_HASH"));
   if (!emailOk || !passwordOk) {
     passwordFailures.push(now);
     return null;
