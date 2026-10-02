@@ -20,7 +20,13 @@ const str = (f: FormData, k: string) => String(f.get(k) ?? "").trim();
 /* ---------- Auth ---------- */
 
 export async function requestLoginAction(_: FormState, form: FormData): Promise<FormState> {
-  const result = await sendLoginLink(str(form, "email"));
+  let result;
+  try {
+    result = await sendLoginLink(str(form, "email"));
+  } catch (err) {
+    console.error("Sign-in email failed:", err);
+    return { error: "We couldn't send the sign-in email just now. Please try again in a few minutes." };
+  }
   if (!result.ok) return { error: result.error };
   return { message: "Check your inbox for a sign-in link. It expires in 20 minutes." };
 }
@@ -181,9 +187,14 @@ export async function updateSettingsAction(_: FormState, form: FormData): Promis
 
 export async function sendTestDigestAction(): Promise<FormState> {
   const user = await requireUser();
-  const digest = await buildDigest(user);
-  if (!digest) return { error: "Nothing to send yet. Add some plants first." };
-  await sendEmail({ ...digest.email, subject: `[Preview] ${digest.email.subject}` });
+  try {
+    const digest = await buildDigest(user);
+    if (!digest) return { error: "Nothing to send yet. Add some plants first." };
+    await sendEmail({ ...digest.email, subject: `[Preview] ${digest.email.subject}` });
+  } catch (err) {
+    console.error("Preview email failed:", err);
+    return { error: "We couldn't send the preview email just now. Please try again in a few minutes." };
+  }
   return { message: `Sent a preview to ${user.email}.` };
 }
 
