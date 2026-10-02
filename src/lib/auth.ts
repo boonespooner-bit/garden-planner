@@ -49,10 +49,10 @@ export async function sendLoginLink(rawEmail: string): Promise<{ ok: true } | { 
   const link = appUrl(`/auth/verify?token=${token}`);
   await sendEmail({
     to: email,
-    subject: "Your Garden Planner sign-in link",
-    text: `Sign in to Garden Planner:\n\n${link}\n\nThis link expires in ${LOGIN_TOKEN_MINUTES} minutes. If you didn't request it, you can ignore this email.`,
+    subject: "Your Tend Weekly sign-in link",
+    text: `Sign in to Tend Weekly:\n\n${link}\n\nThis link expires in ${LOGIN_TOKEN_MINUTES} minutes. If you didn't request it, you can ignore this email.`,
     html: `<div style="font-family:system-ui,sans-serif;max-width:480px;margin:auto;padding:24px;color:#1f2a1f">
-      <h2 style="color:#2f5d34;margin-top:0">🌿 Sign in to Garden Planner</h2>
+      <h2 style="color:#2f5d34;margin-top:0">🌿 Sign in to Tend Weekly</h2>
       <p>Click the button below to sign in. This link expires in ${LOGIN_TOKEN_MINUTES} minutes.</p>
       <p><a href="${escapeHtml(link)}" style="display:inline-block;background:#2f5d34;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:600">Sign in</a></p>
       <p style="color:#6b6b6b;font-size:13px">If you didn't request this, you can safely ignore it.</p>

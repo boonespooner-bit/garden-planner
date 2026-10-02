@@ -5,7 +5,7 @@ import { signOutAction } from "./actions";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: { default: "Garden Planner", template: "%s · Garden Planner" },
+  title: { default: "Tend Weekly", template: "%s · Tend Weekly" },
   description:
     "Pruning, feeding, spraying and soil schedules for your plants and your climate, with a Friday email so you can plan the weekend.",
 };
@@ -20,7 +20,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-3">
             <Link href={user ? "/dashboard" : "/"} className="flex items-center gap-2 text-lg font-bold text-leaf-700">
               <span aria-hidden>🌿</span>
-              <span className="font-[family-name:var(--font-display)]">Garden Planner</span>
+              <span className="font-[family-name:var(--font-display)]">Tend Weekly</span>
             </Link>
             {user ? (
               <nav className="flex flex-wrap items-center gap-1 text-sm font-semibold">

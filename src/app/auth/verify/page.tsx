@@ -15,7 +15,7 @@ export default async function VerifyPage({ searchParams }: { searchParams: Promi
         <div className="text-4xl" aria-hidden>
           🌿
         </div>
-        <h1 className="text-2xl font-bold text-leaf-900">Welcome to Garden Planner</h1>
+        <h1 className="text-2xl font-bold text-leaf-900">Welcome to Tend Weekly</h1>
         {token ? (
           <form action={redeemLoginAction}>
             <input type="hidden" name="token" value={token} />

@@ -123,7 +123,8 @@ function renderHtml({ user, forecast, warnings, goodSprayDays = [], due, upcomin
 
   return `<!doctype html><html><body style="margin:0;background:${C.bg};font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:${C.text}">
   <div style="max-width:620px;margin:auto;padding:24px 16px">
-    <h1 style="color:${C.green};font-size:24px;margin:0 0 4px">🌿 Your weekend garden plan</h1>
+    <div style="color:${C.muted};font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">🌿 Tend Weekly</div>
+    <h1 style="color:${C.green};font-size:24px;margin:4px 0 4px">Your weekend garden plan</h1>
     <div style="color:${C.muted};font-size:14px">${e(user.locationName ?? "")}${user.hardinessZone ? ` · Zone ${e(user.hardinessZone)}` : ""}</div>
     ${weatherRow}${warningHtml}
     <h2 style="color:${C.green};font-size:19px;margin:20px 0 4px">${due.length ? "To do this weekend" : "Nothing due this weekend. Enjoy the garden!"}</h2>
@@ -135,7 +136,7 @@ function renderHtml({ user, forecast, warnings, goodSprayDays = [], due, upcomin
 }
 
 function renderText({ user, warnings, due, upcoming, unsubscribe, forecast }: RenderArgs): string {
-  const lines: string[] = [`YOUR WEEKEND GARDEN PLAN: ${user.locationName ?? ""}`, ""];
+  const lines: string[] = [`TEND WEEKLY · YOUR WEEKEND GARDEN PLAN: ${user.locationName ?? ""}`, ""];
   if (forecast) {
     lines.push(
       "Weather: " +

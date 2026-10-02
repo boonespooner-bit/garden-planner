@@ -1,13 +1,13 @@
 # Render Blueprint: Dashboard → New → Blueprint → pick this repo.
 databases:
-  - name: garden-db
+  - name: tend-weekly-db
     plan: basic-256mb
     databaseName: garden
     user: garden
 
 services:
   - type: web
-    name: garden-planner
+    name: tend-weekly
     runtime: node
     plan: starter
     buildCommand: npm ci && npm run build
@@ -18,17 +18,17 @@ services:
         value: "22"
       - key: DATABASE_URL
         fromDatabase:
-          name: garden-db
+          name: tend-weekly-db
           property: connectionString
       - key: AUTH_SECRET
         generateValue: true
       - key: CRON_SECRET
         generateValue: true
-      - key: APP_URL # e.g. https://garden-planner.onrender.com, or your own domain
+      - key: APP_URL # e.g. https://tendweekly.com (or tend-weekly.onrender.com before the domain is set up)
         sync: false
       - key: RESEND_API_KEY
         sync: false
-      - key: EMAIL_FROM # e.g. Garden Planner <hello@yourgardendomain.com>
+      - key: EMAIL_FROM # e.g. Tend Weekly <hello@tendweekly.com>
         sync: false
       - key: ANTHROPIC_API_KEY
         sync: false
@@ -36,7 +36,7 @@ services:
   # Hourly from Thursday to Saturday (UTC). The app only emails each user once,
   # at or after 7am on Friday in their own timezone, so every timezone is covered.
   - type: cron
-    name: garden-weekly-email
+    name: tend-weekly-friday-email
     runtime: node
     plan: starter
     schedule: "5 * * * 4,5,6"
@@ -46,7 +46,7 @@ services:
       - key: CRON_SECRET
         fromService:
           type: web
-          name: garden-planner
+          name: tend-weekly
           envVarKey: CRON_SECRET
       - key: APP_URL
         sync: false
