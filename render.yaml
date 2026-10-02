@@ -41,7 +41,7 @@ services:
     plan: starter
     schedule: "5 * * * 4,5,6"
     buildCommand: echo "no build needed"
-    startCommand: curl -fsS -X POST -H "Authorization: Bearer $CRON_SECRET" "$APP_URL/api/cron/weekly"
+    startCommand: 'curl -fsS -X POST -H "Authorization: Bearer $CRON_SECRET" "$APP_URL/api/cron/weekly"'
     envVars:
       - key: CRON_SECRET
         fromService:
