@@ -24,11 +24,11 @@ services:
         generateValue: true
       - key: CRON_SECRET
         generateValue: true
-      - key: APP_URL # e.g. https://garden.aspooner.com
+      - key: APP_URL # e.g. https://garden-planner.onrender.com, or your own domain
         sync: false
       - key: RESEND_API_KEY
         sync: false
-      - key: EMAIL_FROM # e.g. Garden Planner <garden@aspooner.com>
+      - key: EMAIL_FROM # e.g. Garden Planner <hello@yourgardendomain.com>
         sync: false
       - key: ANTHROPIC_API_KEY
         sync: false

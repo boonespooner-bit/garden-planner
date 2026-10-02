@@ -62,8 +62,9 @@ curl -X POST -H "Authorization: Bearer $CRON_SECRET" http://localhost:3000/api/c
 
 1. In Render: **New → Blueprint**, then pick this repo. `render.yaml` creates the Postgres database, the web service and the hourly cron job.
 2. Fill in the prompted env vars: `APP_URL` (both services), `RESEND_API_KEY`, `EMAIL_FROM`, `ANTHROPIC_API_KEY`.
-3. In Resend, verify the domain you send from (e.g. `aspooner.com`) so emails don't land in spam.
-4. Optional: point a subdomain such as `garden.aspooner.com` at the web service (Render → Settings → Custom domain), and set `APP_URL` to match.
+3. The app works straight away at its free Render address (e.g. `https://garden-planner.onrender.com`). Set `APP_URL` to that address.
+4. Optional: buy a dedicated domain for the app, add it in Render → Settings → Custom domain, and update `APP_URL`.
+5. Emails need a domain you own: verify it in Resend so mail doesn't land in spam, and use it in `EMAIL_FROM`. Until then, Resend's test sender can only email your own address.
 
 Migrations run automatically on each deploy (`npm run db:migrate` in the start command).
 
