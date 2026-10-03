@@ -49,6 +49,11 @@ describe("plant library", () => {
     expect(searchLibrary("quince")[0].key).toBe("quince");
     expect(searchLibrary("medlar")[0].key).toBe("medlar");
     expect(searchLibrary("juneberry")[0].key).toBe("serviceberry");
+    expect(searchLibrary("mulberry")[0].key).toBe("mulberry");
+    expect(searchLibrary("filbert")[0].key).toBe("hazelnut");
+    for (const k of ["almond", "pecan", "walnut", "chestnut", "pistachio", "macadamia"]) {
+      expect(searchLibrary(k)[0].key).toBe(k);
+    }
   });
 });
 

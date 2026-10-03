@@ -17,6 +17,7 @@ const CATEGORY_LABELS: Record<PlantCategory, string> = {
   evergreen: "Evergreens",
   tree: "Trees",
   fruit: "Fruit",
+  nut: "Nut trees",
   vine: "Vines",
   perennial: "Perennials & grasses",
   herb: "Herbs",

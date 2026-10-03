@@ -54,6 +54,7 @@ export type PlantCategory =
   | "evergreen"
   | "tree"
   | "fruit"
+  | "nut"
   | "vine"
   | "perennial"
   | "herb"

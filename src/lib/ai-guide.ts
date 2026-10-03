@@ -45,7 +45,7 @@ const GuideSchema = z.object({
   name: z.string().describe("Common name, title case"),
   botanical: z.string(),
   aliases: z.array(z.string()),
-  category: z.enum(["rose", "shrub", "evergreen", "tree", "fruit", "vine", "perennial", "herb", "vegetable", "tropical"]),
+  category: z.enum(["rose", "shrub", "evergreen", "tree", "fruit", "nut", "vine", "perennial", "herb", "vegetable", "tropical"]),
   zoneMin: z.number().int(),
   zoneMax: z.number().int(),
   overview: z.string(),

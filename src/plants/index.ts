@@ -3,6 +3,7 @@ import { rosesAndHydrangeas } from "./library/roses-hydrangeas";
 import { evergreens, shrubs, trees } from "./library/shrubs";
 import { fruit } from "./library/fruit";
 import { stoneAndPome } from "./library/stone-pome";
+import { nuts } from "./library/nuts";
 import { herbsAndVeg, perennials, tropicals } from "./library/perennials";
 
 export const LIBRARY: PlantGuide[] = [
@@ -12,6 +13,7 @@ export const LIBRARY: PlantGuide[] = [
   ...trees,
   ...fruit,
   ...stoneAndPome,
+  ...nuts,
   ...perennials,
   ...herbsAndVeg,
   ...tropicals,
