@@ -33,6 +33,7 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
             lastFrost: user.lastFrost,
             firstFrost: user.firstFrost,
             frostFree: user.frostFree,
+            chillHours: user.chillHours,
             units: user.units,
             treatmentPreference: user.treatmentPreference,
             weeklyEmail: user.weeklyEmail,

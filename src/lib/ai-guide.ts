@@ -54,6 +54,10 @@ const GuideSchema = z.object({
   soil: z.object({ ph: z.string(), texture: z.string(), amendments: z.string() }),
   problems: z.array(z.object({ name: z.string(), signs: z.string(), treatment: z.string() })),
   tasks: z.array(TaskSchema),
+  chill: z
+    .object({ low: z.number().int(), typical: z.number().int(), lowChillVarieties: z.string() })
+    .optional()
+    .describe("Only for fruit plants with a winter chill requirement: chill hours (32-45°F) needed by the lowest-chill varieties and by typical varieties, plus named low-chill varieties"),
 });
 
 const SYSTEM = `You are a horticulturist writing a practical, accurate year-round care plan for a home gardener.
@@ -77,6 +81,7 @@ Content rules:
 - List the 2-4 most common problems with signs and treatment (organic options first).
 - Be conservative and safe: no off-label uses, warn about pollinators and heat limits for oils/sulfur.
 - Typically 4-9 tasks. Don't invent tasks the plant doesn't need.
+- For fruit trees and bushes that need winter chill to flower (apples, stone fruit, blueberries, etc.), fill in chill with realistic chill-hour figures.
 - If the input isn't a real plant you can confidently identify, set recognized=false and keep other fields minimal.`;
 
 export class GuideLimitError extends Error {}
@@ -142,6 +147,7 @@ async function generateGuide(plantName: string, normalized: string): Promise<Pla
     water: g.water,
     soil: g.soil,
     problems: g.problems,
+    chill: g.chill,
     tasks: g.tasks.map((t) => ({
       ...t,
       repeat: t.repeat && t.repeat.times > 1 && t.repeat.everyWeeks > 0 ? t.repeat : undefined,

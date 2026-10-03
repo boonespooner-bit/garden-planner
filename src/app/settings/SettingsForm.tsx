@@ -9,6 +9,7 @@ interface Props {
   lastFrost: string;
   firstFrost: string;
   frostFree: boolean;
+  chillHours: number | null;
   units: "imperial" | "metric";
   treatmentPreference: "organic" | "both";
   weeklyEmail: boolean;
@@ -28,7 +29,7 @@ export function SettingsForm({ user }: { user: Props }) {
             adjust them. All your task dates move with them.
           </p>
         </div>
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label className="label" htmlFor="hardinessZone">
               Hardiness zone
@@ -46,6 +47,13 @@ export function SettingsForm({ user }: { user: Props }) {
               Average first fall frost
             </label>
             <input id="firstFrost" name="firstFrost" type="date" defaultValue={`${year}-${user.firstFrost}`} className="input" />
+          </div>
+          <div>
+            <label className="label" htmlFor="chillHours">
+              Winter chill hours
+            </label>
+            <input id="chillHours" name="chillHours" type="number" min={0} max={3000} step={10} defaultValue={user.chillHours ?? ""} className="input" placeholder="e.g. 800" />
+            <p className="mt-1 text-xs text-muted">Hours between 32–45°F each winter. Fruit trees need enough of them to flower.</p>
           </div>
         </div>
         <label className="flex items-center gap-2 text-sm">

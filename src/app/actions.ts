@@ -81,6 +81,7 @@ export async function setLocationAction(_: FormState, form: FormData): Promise<F
       lastFrost: climate.lastFrost,
       firstFrost: climate.firstFrost,
       frostFree: climate.frostFree,
+      chillHours: climate.chillHours,
       // Only pick units the first time; afterwards respect the user's choice.
       ...(user.lastFrost ? {} : { units: defaultUnits(countryCode) }),
     })
@@ -172,6 +173,11 @@ export async function updateSettingsAction(_: FormState, form: FormData): Promis
   const lf = toMd(str(form, "lastFrost"));
   const ff = toMd(str(form, "firstFrost"));
   if (!MD.test(lf) || !MD.test(ff)) return { error: "Please enter valid frost dates." };
+  const chillRaw = str(form, "chillHours");
+  const chillHours = chillRaw === "" ? null : Math.round(Number(chillRaw));
+  if (chillHours !== null && (!Number.isFinite(chillHours) || chillHours < 0 || chillHours > 3000)) {
+    return { error: "Chill hours should be a number between 0 and 3000." };
+  }
   const zone = str(form, "hardinessZone");
   if (zone && !/^(1[0-3]|[1-9])[ab]?$/.test(zone)) return { error: "Zone should look like 7a or 10b." };
 
@@ -182,6 +188,7 @@ export async function updateSettingsAction(_: FormState, form: FormData): Promis
       firstFrost: ff,
       hardinessZone: zone || null,
       frostFree: form.get("frostFree") === "on",
+      chillHours,
       units: str(form, "units") === "metric" ? "metric" : "imperial",
       treatmentPreference: str(form, "treatmentPreference") === "organic" ? "organic" : "both",
       weeklyEmail: form.get("weeklyEmail") === "on",

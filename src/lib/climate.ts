@@ -15,6 +15,8 @@ export interface ClimateEstimate extends ClimateAnchors {
   /** Average annual extreme minimum, °C. */
   extremeMinC: number;
   yearsAnalyzed: number;
+  /** Average winter chill hours (0–7.2°C / 32–45°F), or null if unavailable. */
+  chillHours: number | null;
 }
 
 export interface GeocodeResult {
@@ -151,7 +153,74 @@ export function analyzeClimate(series: DailySeries, latitude: number): ClimateEs
     firstFrost: toMd(firstDoy),
     frostFree,
     yearsAnalyzed: full.length,
+    chillHours: null,
   };
+}
+
+/* ---- Chill hours ----
+ * Many fruit trees (apples, peaches, cherries, blueberries…) only flower and fruit
+ * well after enough winter hours between 32°F and 45°F (0–7.2°C). We count those
+ * hours over Nov–Feb (May–Aug in the southern hemisphere) for the last 5 winters.
+ * Checked against published values: Richmond VA ≈1230, Atlanta ≈970, Dallas ≈730,
+ * Sacramento ≈930, Houston ≈400, Los Angeles ≈230.
+ */
+
+interface HourlySeries {
+  time: string[];
+  temperature_2m: (number | null)[];
+}
+
+export function analyzeChill(series: HourlySeries, latitude: number): number | null {
+  const southern = latitude < 0;
+  const seasons = new Map<number, { chill: number; hours: number }>();
+  for (let i = 0; i < series.time.length; i++) {
+    const t = series.temperature_2m[i];
+    if (t == null) continue;
+    const year = Number(series.time[i].slice(0, 4));
+    const month = Number(series.time[i].slice(5, 7));
+    let key: number;
+    if (southern) {
+      if (month < 5 || month > 8) continue;
+      key = year;
+    } else {
+      if (month > 2 && month < 11) continue;
+      key = month >= 11 ? year : year - 1;
+    }
+    const s = seasons.get(key) ?? { chill: 0, hours: 0 };
+    s.hours++;
+    if (t >= 0 && t <= 7.2) s.chill++;
+    seasons.set(key, s);
+  }
+  // Only count complete winters (~120 days of hourly data).
+  const complete = [...seasons.values()].filter((s) => s.hours >= 110 * 24);
+  if (complete.length === 0) return null;
+  const avg = complete.reduce((a, s) => a + s.chill, 0) / complete.length;
+  return Math.round(avg / 10) * 10;
+}
+
+async function fetchChillHours(latitude: number, longitude: number, now: Date): Promise<number | null> {
+  // Last 5 complete winters.
+  const y = now.getUTCFullYear();
+  const southern = latitude < 0;
+  const lastWinterEndYear = southern ? (now.getUTCMonth() >= 8 ? y : y - 1) : now.getUTCMonth() >= 2 ? y : y - 1;
+  const start = southern ? utcDate(lastWinterEndYear - 4, 5, 1) : utcDate(lastWinterEndYear - 5, 11, 1);
+  const end = southern ? utcDate(lastWinterEndYear, 8, 31) : utcDate(lastWinterEndYear, 2, 28);
+  const url = new URL("https://archive-api.open-meteo.com/v1/archive");
+  url.searchParams.set("latitude", latitude.toFixed(4));
+  url.searchParams.set("longitude", longitude.toFixed(4));
+  url.searchParams.set("start_date", isoDate(start));
+  url.searchParams.set("end_date", isoDate(end));
+  url.searchParams.set("hourly", "temperature_2m");
+  url.searchParams.set("timezone", "auto");
+  try {
+    const res = await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(30_000) });
+    if (!res.ok) return null;
+    const data = (await res.json()) as { hourly: HourlySeries };
+    return analyzeChill(data.hourly, latitude);
+  } catch (err) {
+    console.error("Chill hours lookup failed:", err);
+    return null;
+  }
 }
 
 export async function estimateClimate(latitude: number, longitude: number, now = new Date()): Promise<ClimateEstimate> {
@@ -163,8 +232,11 @@ export async function estimateClimate(latitude: number, longitude: number, now =
   url.searchParams.set("end_date", isoDate(utcDate(endYear, 12, 31)));
   url.searchParams.set("daily", "temperature_2m_min");
   url.searchParams.set("timezone", "auto");
-  const res = await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(30_000) });
+  const [res, chillHours] = await Promise.all([
+    fetch(url, { cache: "no-store", signal: AbortSignal.timeout(30_000) }),
+    fetchChillHours(latitude, longitude, now),
+  ]);
   if (!res.ok) throw new Error(`Climate lookup failed (${res.status})`);
   const data = (await res.json()) as { daily: DailySeries };
-  return analyzeClimate(data.daily, latitude);
+  return { ...analyzeClimate(data.daily, latitude), chillHours };
 }

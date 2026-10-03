@@ -30,6 +30,7 @@ export const users = pgTable("users", {
   lastFrost: text("last_frost"), // "MM-DD"
   firstFrost: text("first_frost"), // "MM-DD"
   frostFree: boolean("frost_free").notNull().default(false),
+  chillHours: integer("chill_hours"),
 
   // Preferences
   units: text("units", { enum: ["imperial", "metric"] }).notNull().default("imperial"),

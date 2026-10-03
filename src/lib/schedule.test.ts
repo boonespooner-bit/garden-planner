@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { getCuratedGuide, LIBRARY, searchLibrary } from "@/plants";
-import { analyzeClimate, usdaZone } from "./climate";
+import { chillAdvice } from "./chill";
+import { analyzeChill, analyzeClimate, usdaZone } from "./climate";
 import { isoDate, utcDate } from "./dates";
 import { bucketSchedule, buildSchedule, seasonAnchors } from "./schedule";
 import { buildWarnings, type ForecastDay } from "./weather";
@@ -42,6 +43,12 @@ describe("plant library", () => {
     expect(searchLibrary("strawberry")[0].key).toBe("strawberry");
     expect(searchLibrary("tangerine")[0].key).toBe("mandarin");
     expect(searchLibrary("satsuma")[0].key).toBe("mandarin");
+    expect(searchLibrary("apricot")[0].key).toBe("apricot");
+    expect(searchLibrary("asian pear")[0].key).toBe("asian-pear");
+    expect(searchLibrary("pear")[0].key).toBe("pear");
+    expect(searchLibrary("quince")[0].key).toBe("quince");
+    expect(searchLibrary("medlar")[0].key).toBe("medlar");
+    expect(searchLibrary("juneberry")[0].key).toBe("serviceberry");
   });
 });
 
@@ -133,5 +140,27 @@ describe("weather warnings", () => {
     );
     expect(w.map((x) => x.kind)).toEqual(["frost", "rain"]);
     expect(w[0].title).toContain("32°F");
+  });
+});
+
+describe("chill hours", () => {
+  it("counts hours between 0 and 7.2°C over Nov–Feb", () => {
+    const time: string[] = [];
+    const temps: number[] = [];
+    for (let d = utcDate(2022, 11, 1); d < utcDate(2023, 3, 1); d = new Date(d.getTime() + 3_600_000)) {
+      time.push(d.toISOString().slice(0, 16));
+      // 6 chill hours per day (hours 0–5 at 3°C), the rest warm.
+      temps.push(d.getUTCHours() < 6 ? 3 : 15);
+    }
+    expect(analyzeChill({ time, temperature_2m: temps }, 40)).toBe(720); // 120 days × 6
+  });
+
+  it("advises low-chill varieties in mild-winter areas", () => {
+    const peach = getCuratedGuide("peach")!;
+    expect(chillAdvice(peach, 1000)?.level).toBe("ok");
+    expect(chillAdvice(peach, 300)?.level).toBe("choose-low");
+    expect(chillAdvice(peach, 50)?.level).toBe("too-warm");
+    expect(chillAdvice(peach, null)).toBeNull();
+    expect(chillAdvice(getCuratedGuide("lavender")!, 100)).toBeNull();
   });
 });

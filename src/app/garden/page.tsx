@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireOnboardedUser } from "@/lib/auth";
+import { chillAdvice } from "@/lib/chill";
 import { zoneNumber } from "@/lib/climate";
 import { formatDate, fromMonthDay } from "@/lib/dates";
 import { loadGarden } from "@/lib/garden";
@@ -31,8 +32,13 @@ export default async function GardenPage({ searchParams }: { searchParams: Promi
   const zone = zoneNumber(user.hardinessZone);
   const md = (s: string) => formatDate(fromMonthDay(2001, s), { month: "long", day: "numeric" });
 
-  const zoneNote = (g: PlantGuide) =>
-    zone != null && (zone < g.zones.min || zone > g.zones.max) ? ` · ⚠️ usually zones ${g.zones.min}–${g.zones.max}` : "";
+  const zoneNote = (g: PlantGuide) => {
+    const notes: string[] = [];
+    if (zone != null && (zone < g.zones.min || zone > g.zones.max)) notes.push(`⚠️ usually zones ${g.zones.min}–${g.zones.max}`);
+    const chill = chillAdvice(g, user.chillHours);
+    if (chill && chill.level !== "ok") notes.push(`${chill.level === "too-warm" ? "⚠️" : "❄️"} ${chill.short}`);
+    return notes.map((n) => ` · ${n}`).join("");
+  };
 
   return (
     <div className="space-y-8">
@@ -42,7 +48,8 @@ export default async function GardenPage({ searchParams }: { searchParams: Promi
           <h1 className="text-3xl font-bold text-leaf-900">{garden.length ? "My plants" : "What's growing in your garden?"}</h1>
           <p className="mt-2 text-muted">
             {user.locationName} · Zone {user.hardinessZone ?? "?"} ·{" "}
-            {user.frostFree ? "Frost is rare here" : `Last frost ≈ ${md(user.lastFrost)}, first frost ≈ ${md(user.firstFrost)}`}{" "}
+            {user.frostFree ? "Frost is rare here" : `Last frost ≈ ${md(user.lastFrost)}, first frost ≈ ${md(user.firstFrost)}`}
+            {user.chillHours != null && ` · ≈${user.chillHours} chill hours`}{" "}
             <Link href="/settings" className="text-leaf-700 underline">
               adjust
             </Link>

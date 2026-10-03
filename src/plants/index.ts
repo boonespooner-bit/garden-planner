@@ -2,6 +2,7 @@ import type { PlantGuide } from "./types";
 import { rosesAndHydrangeas } from "./library/roses-hydrangeas";
 import { evergreens, shrubs, trees } from "./library/shrubs";
 import { fruit } from "./library/fruit";
+import { stoneAndPome } from "./library/stone-pome";
 import { herbsAndVeg, perennials, tropicals } from "./library/perennials";
 
 export const LIBRARY: PlantGuide[] = [
@@ -10,6 +11,7 @@ export const LIBRARY: PlantGuide[] = [
   ...evergreens,
   ...trees,
   ...fruit,
+  ...stoneAndPome,
   ...perennials,
   ...herbsAndVeg,
   ...tropicals,

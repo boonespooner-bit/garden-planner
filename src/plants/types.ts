@@ -87,4 +87,13 @@ export interface PlantGuide {
   };
   problems: Problem[];
   tasks: CareTask[];
+  /** Winter chill needed to flower and fruit (hours at 32–45°F / 0–7.2°C). */
+  chill?: {
+    /** What the lowest-chill varieties need. */
+    low: number;
+    /** What most common varieties need. */
+    typical: number;
+    /** Named low-chill varieties to suggest in mild-winter areas. */
+    lowChillVarieties: string;
+  };
 }

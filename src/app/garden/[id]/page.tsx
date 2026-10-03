@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { removePlantAction, updatePlantAction } from "@/app/actions";
 import { TaskHowTo, TaskTypeChip } from "@/components/TaskCard";
 import { requireOnboardedUser } from "@/lib/auth";
+import { chillAdvice } from "@/lib/chill";
 import { formatRange } from "@/lib/dates";
 import { loadCompletions, loadGardenEntry, scheduleFor } from "@/lib/garden";
 
@@ -13,6 +14,7 @@ export default async function PlantPage({ params }: { params: Promise<{ id: stri
   if (!entry) notFound();
 
   const { guide } = entry;
+  const chill = chillAdvice(guide, user.chillHours);
   const { today, occurrences } = scheduleFor(user, [entry], 52);
   const done = await loadCompletions(user.id);
   // Next date for each task, so the guide reads as a timeline for this garden.
@@ -46,6 +48,20 @@ export default async function PlantPage({ params }: { params: Promise<{ id: stri
       </header>
 
       <p className="text-lg">{guide.overview}</p>
+
+      {chill && (
+        <div
+          className={`rounded-xl border-l-4 px-4 py-3 text-sm ${
+            chill.level === "ok" ? "border-leaf-500 bg-leaf-50" : "border-warn bg-warn-bg"
+          }`}
+        >
+          <p className={`font-semibold ${chill.level === "ok" ? "text-leaf-700" : "text-warn"}`}>
+            {chill.level === "ok" ? "❄️ " : "⚠️ "}
+            {chill.short}
+          </p>
+          <p className="mt-1">{chill.message}</p>
+        </div>
+      )}
 
       <section className="grid gap-3 md:grid-cols-3">
         <Fact title="☀️ Sun" body={guide.sun} />

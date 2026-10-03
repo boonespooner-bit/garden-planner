@@ -3,7 +3,7 @@ import { P, before, dormantCopper, dormantOil, fallCleanup, mulch, soilTest } fr
 
 const noSprayInBloom = "Never spray insecticides while trees are in bloom. Bees are pollinating your crop.";
 
-function fruitThinning(spacing: string): CareTask {
+export function fruitThinning(spacing: string): CareTask {
   return {
     id: "thin-fruit",
     type: "prune",
@@ -19,7 +19,7 @@ function fruitThinning(spacing: string): CareTask {
   };
 }
 
-function waterSprouts(): CareTask {
+export function waterSprouts(): CareTask {
   return {
     id: "summer-prune",
     type: "prune",
@@ -34,7 +34,7 @@ function waterSprouts(): CareTask {
   };
 }
 
-function rodentGuard(): CareTask {
+export function rodentGuard(): CareTask {
   return {
     id: "trunk-guard",
     type: "protect",
@@ -58,6 +58,7 @@ export const fruit: PlantGuide[] = [
     botanical: "Malus domestica",
     category: "fruit",
     zones: { min: 3, max: 8 },
+    chill: { low: 200, typical: 700, lowChillVarieties: "'Anna', 'Dorsett Golden' and 'Ein Shemer' (about 200–300 hours), or 'Pink Lady' and 'Fuji' (about 400–500) where winters are moderate" },
     overview: "Apples need a yearly dormant prune to build a strong, open framework, a spring disease-prevention program for scab and fire blight, and fruit thinning for good-sized apples.",
     sun: "Full sun, 8+ hours.",
     water: "1 in (2.5 cm) a week during fruit development.",
@@ -140,11 +141,12 @@ export const fruit: PlantGuide[] = [
   },
   {
     key: "pear",
-    name: "Pear tree",
-    aliases: ["pear", "pears", "pyrus", "asian pear"],
+    name: "Pear (European)",
+    aliases: ["pear", "pears", "pyrus", "european pear", "bartlett pear", "bosc pear", "comice pear", "anjou pear"],
     botanical: "Pyrus communis / P. pyrifolia",
     category: "fruit",
     zones: { min: 4, max: 9 },
+    chill: { low: 150, typical: 600, lowChillVarieties: "'Hood' and 'Flordahome' (about 150–250 hours) or 'Kieffer' and 'Orient' (about 350–400). Asian pears are another good low-chill choice" },
     overview: "Upright-growing fruit tree. Its biggest threat is fire blight, so prune carefully, keep nitrogen low, and spread branches to wider angles.",
     sun: "Full sun.",
     water: "1 in (2.5 cm) a week during fruit development.",
@@ -195,6 +197,7 @@ export const fruit: PlantGuide[] = [
     botanical: "Prunus persica",
     category: "fruit",
     zones: { min: 5, max: 9 },
+    chill: { low: 100, typical: 650, lowChillVarieties: "'Tropic Snow', 'Florida Prince' and 'Eva's Pride' (about 100–250 hours), or 'Mid-Pride' and 'Desert Gold' (about 250–350)" },
     overview: "Peaches fruit only on last year's growth, so they need the hardest annual pruning of any fruit tree. Without it, fruit moves to the branch tips. Prune into an open-center vase shape, and protect against peach leaf curl.",
     sun: "Full sun.",
     water: "Consistent moisture during fruit swell (the 6 weeks before harvest).",
@@ -268,6 +271,7 @@ export const fruit: PlantGuide[] = [
     botanical: "Prunus avium / P. cerasus",
     category: "fruit",
     zones: { min: 4, max: 8 },
+    chill: { low: 250, typical: 700, lowChillVarieties: "'Minnie Royal' planted with 'Royal Lee' (about 200–400 hours, plant both), 'Lapins' or 'Stella' (about 400)" },
     overview: "Sweet and tart cherries fruit on long-lived spurs. They're best pruned lightly in dry weather to avoid bacterial canker and silver leaf. Birds are the biggest threat to the crop.",
     sun: "Full sun.",
     water: "Moderate and even; too much water near harvest splits fruit.",
@@ -318,6 +322,7 @@ export const fruit: PlantGuide[] = [
     botanical: "Prunus domestica / P. salicina",
     category: "fruit",
     zones: { min: 4, max: 9 },
+    chill: { low: 250, typical: 500, lowChillVarieties: "'Methley' (about 250 hours), 'Santa Rosa' (about 300), 'Gulf Gold' and 'Gulf Ruby' (about 250–350)" },
     overview: "Productive and fairly easy. Prune in the growing season to avoid silver leaf disease, and cut out black knot in winter.",
     sun: "Full sun.",
     water: "Moderate.",
@@ -422,6 +427,7 @@ export const fruit: PlantGuide[] = [
     botanical: "Diospyros kaki (Asian) / D. virginiana (American)",
     category: "fruit",
     zones: { min: 6, max: 10 },
+    chill: { low: 100, typical: 200, lowChillVarieties: "most Asian persimmons such as 'Fuyu' need only about 100–200 hours" },
     overview:
       "One of the easiest fruit trees: few pests, little spraying, and beautiful orange fall fruit and color. Asian persimmons (zones 7–10) need light, regular pruning to keep the brittle branches from snapping under heavy crops. American persimmons are hardy to zone 4–5. Fruit forms on this year's new shoots, which grow from buds on last year's wood.",
     sun: "Full sun.",
@@ -505,6 +511,7 @@ export const fruit: PlantGuide[] = [
     botanical: "Punica granatum",
     category: "fruit",
     zones: { min: 7, max: 11 },
+    chill: { low: 100, typical: 150, lowChillVarieties: "'Wonderful' and most other varieties need only about 100–200 hours" },
     overview:
       "Drought-tolerant Mediterranean shrub or small tree with red-orange summer flowers and fall fruit. Fruit forms on short spurs on wood that's 2–3 years old and at the tips of new growth, so prune lightly and consistently rather than hard. Even, steady watering prevents split fruit.",
     sun: "Full sun, 8+ hours, for good flowering and sweet fruit.",
@@ -608,6 +615,7 @@ export const fruit: PlantGuide[] = [
     botanical: "Actinidia deliciosa (fuzzy kiwi) / A. arguta & A. kolomikta (hardy kiwi)",
     category: "fruit",
     zones: { min: 4, max: 9 },
+    chill: { low: 200, typical: 600, lowChillVarieties: "'Vincent' (about 200 hours) with a matching low-chill male. Standard 'Hayward' needs about 600–800" },
     overview:
       "Very vigorous vines that need a strong trellis or pergola. Plants are male or female: you need at least one male within about 30 ft (10 m) for every 6–8 females, unless you have a self-fertile variety such as 'Issai'. Fruit forms on this year's shoots growing from last year's canes, so pruning is hard in winter and repeated in summer. Fuzzy kiwi is hardy to zone 7–8. Hardy kiwi (kiwiberry) takes zone 4 but leafs out early, so late frosts are its biggest threat.",
     sun: "Full sun, sheltered from strong wind.",
@@ -993,6 +1001,7 @@ export const fruit: PlantGuide[] = [
     botanical: "Vaccinium corymbosum / V. ashei",
     category: "fruit",
     zones: { min: 3, max: 9 },
+    chill: { low: 150, typical: 800, lowChillVarieties: "southern highbush such as 'Misty', 'Sunshine Blue' and 'Emerald' (about 150–300 hours), or rabbiteye types (about 300–600)" },
     overview: "Long-lived fruiting shrubs that must have very acidic soil (pH 4.5–5.5). Prune every winter to renew old canes.",
     sun: "Full sun.",
     water: "Shallow roots: 1–2 in (2.5–5 cm) a week, more during fruit set. Rainwater is best if your tap water is hard.",
@@ -1051,6 +1060,7 @@ export const fruit: PlantGuide[] = [
     botanical: "Rubus idaeus",
     category: "fruit",
     zones: { min: 3, max: 8 },
+    chill: { low: 200, typical: 700, lowChillVarieties: "'Dorman Red' and 'Bababerry' (about 200–400 hours). Fall-bearing types also cope better with mild winters" },
     overview: "Canes live two years. Summer-bearing raspberries fruit on second-year canes. Fall-bearing (everbearing) types fruit on first-year cane tips. Pruning depends on which you have.",
     sun: "Full sun.",
     water: "1–2 in (2.5–5 cm) a week during fruiting.",
@@ -1102,6 +1112,7 @@ export const fruit: PlantGuide[] = [
     botanical: "Rubus spp.",
     category: "fruit",
     zones: { min: 5, max: 9 },
+    chill: { low: 200, typical: 600, lowChillVarieties: "'Brazos', 'Rosborough' and 'Natchez' (about 200–400 hours)" },
     overview: "Vigorous cane fruit, either upright or trailing. Fruit forms on second-year canes (except primocane types). Summer tipping and winter thinning keep it productive and manageable.",
     sun: "Full sun.",
     water: "1–2 in (2.5–5 cm) a week during fruiting.",
