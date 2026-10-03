@@ -6,7 +6,7 @@ A garden management web app. You tell it where you live and what you grow, and i
 
 - **Passwordless sign-up/sign-in** by emailed link (public, multi-user).
 - **Location onboarding**: search by town/postcode or use the browser's location. The app looks at about 10 years of daily temperatures for that spot to estimate the **USDA hardiness zone** and **average last/first frost dates**. It works worldwide and in both hemispheres, and you can override everything in Settings.
-- **Plant library**: 69 hand-written care guides (roses, hydrangeas, flowering shrubs, evergreens, trees, fruit, vines, perennials, herbs, vegetables, tropicals). Each has pruning, feeding, spraying, soil and protection tasks, step-by-step how-to, products (organic first, then conventional), tools, cautions and common problems.
+- **Plant library**: 70 hand-written care guides (roses, hydrangeas, flowering shrubs, evergreens, trees, fruit, vines, perennials, herbs, vegetables, tropicals). Each has pruning, feeding, spraying, soil and protection tasks, step-by-step how-to, products (organic first, then conventional), tools, cautions and common problems.
 - **Any other plant**: if it isn't in the library, Claude writes a guide in the same format. It's cached and shared, and labeled "AI-written".
 - **Scheduling engine**: task windows are stored relative to frost dates (e.g. "4 weeks before last frost"), so the same guide gives correct dates in Atlanta, Minneapolis or Melbourne. Cold-climate-only tasks are hidden in warm zones, and frost tasks are hidden where it doesn't freeze.
 - **Dashboard** with this week's tasks (tick them off), overdue items, the next 6 weeks, and a **live 7-day forecast** with frost/heat/rain/wind/dry warnings and **good spray days**.

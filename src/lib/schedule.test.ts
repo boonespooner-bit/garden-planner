@@ -38,6 +38,8 @@ describe("plant library", () => {
     expect(searchLibrary("persimmon")[0].key).toBe("persimmon");
     expect(searchLibrary("pomegranite")[0].key).toBe("pomegranate");
     expect(searchLibrary("kiwi")[0].key).toBe("kiwi");
+    expect(searchLibrary("strawberry tree")[0].key).toBe("strawberry-tree");
+    expect(searchLibrary("strawberry")[0].key).toBe("strawberry");
   });
 });
 
