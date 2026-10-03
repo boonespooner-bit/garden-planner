@@ -35,6 +35,9 @@ describe("plant library", () => {
     expect(searchLibrary("knock out rose")[0].key).toBe("shrub-rose");
     expect(searchLibrary("Limelight")[0].key).toBe("panicle-hydrangea");
     expect(searchLibrary("meyer lemon")[0].key).toBe("citrus");
+    expect(searchLibrary("persimmon")[0].key).toBe("persimmon");
+    expect(searchLibrary("pomegranite")[0].key).toBe("pomegranate");
+    expect(searchLibrary("kiwi")[0].key).toBe("kiwi");
   });
 });
 
