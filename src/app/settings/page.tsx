@@ -3,7 +3,7 @@ import { deleteAccountAction } from "@/app/actions";
 import { requireUser } from "@/lib/auth";
 import { SettingsForm, TestEmailButton } from "./SettingsForm";
 
-export const metadata = { title: "Settings" };
+export const metadata = { title: "Settings", robots: { index: false, follow: false } };
 
 export default async function SettingsPage({ searchParams }: { searchParams: Promise<{ saved?: string; delete?: string }> }) {
   const user = await requireUser();

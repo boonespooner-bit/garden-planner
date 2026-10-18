@@ -1,7 +1,42 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { PlantIcon } from "@/components/PlantIcon";
 import { getCurrentUser } from "@/lib/auth";
-import { LIBRARY } from "@/plants";
+import { MONTHS, SITE_NAME, jsonLd, monthName, siteUrl } from "@/lib/seo";
+import { LIBRARY, getCuratedGuide } from "@/plants";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
+
+const POPULAR = [
+  "bigleaf-hydrangea", "hybrid-tea-rose", "apple", "peach", "blueberry", "lavender",
+  "crape-myrtle", "fig", "citrus", "boxwood", "japanese-maple", "grape",
+];
+
+const FAQS = [
+  {
+    q: "What is Tend Weekly?",
+    a: "Tend Weekly is a free garden planner. Tell it where you live and what you grow, and it builds a year-round schedule for pruning, fertilizing, spraying, soil care and frost protection, with step-by-step instructions, then emails you every Friday with what to do that weekend.",
+  },
+  {
+    q: "How does it know when I should prune?",
+    a: "Every task is timed relative to your local average last spring frost and first fall frost, which we estimate from 10 years of weather data for your exact location. It also knows whether each plant flowers on old or new wood, which decides whether to prune in late winter or right after flowering.",
+  },
+  {
+    q: "Does it recommend organic products?",
+    a: "Yes. Every fertilizer and spray suggestion lists organic options first, followed by conventional alternatives, and you can switch to organic-only in settings.",
+  },
+  {
+    q: "Will it work where I live?",
+    a: "Yes. It works anywhere in the world and in both hemispheres. It also checks your winter chill hours, so it can warn you when a fruit tree needs a low-chill variety to fruit in a mild climate.",
+  },
+  {
+    q: "Is it free?",
+    a: "Yes. Creating your garden plan and getting the Friday email is free.",
+  },
+];
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ deleted?: string }> }) {
   const user = await getCurrentUser();
@@ -17,11 +52,38 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ d
     { icon: "🌍", title: "Works anywhere", body: `Hardiness zone and frost dates estimated for your exact location, in either hemisphere. ${LIBRARY.length} plants built in, and any other plant on request.` },
   ];
 
+  const thisMonth = MONTHS[new Date().getMonth()];
+  const popular = POPULAR.map((k) => getCuratedGuide(k)).filter((g) => g != null);
+
   return (
     <div className="space-y-14">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLd([
+          { "@context": "https://schema.org", "@type": "WebSite", name: SITE_NAME, url: siteUrl() },
+          {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            name: SITE_NAME,
+            url: siteUrl(),
+            applicationCategory: "LifestyleApplication",
+            operatingSystem: "Any",
+            description: "A free garden planner with pruning, fertilizing and spraying schedules timed to your climate, plus a weekly email.",
+            offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: FAQS.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+          },
+        ])}
+      />
       {deleted && <p className="rounded-lg bg-leaf-50 px-4 py-3 text-sm text-leaf-700">Your account and data have been deleted.</p>}
       <section className="grid items-center gap-8 pt-6 md:grid-cols-[1.2fr_1fr]">
         <div className="space-y-5">
+          <p className="text-sm font-bold uppercase tracking-wide text-leaf-700">
+            Free garden planner · gardening tips &amp; pruning schedules
+          </p>
           <h1 className="text-4xl font-bold leading-tight text-leaf-900 md:text-5xl">
             Know exactly what your garden needs this weekend.
           </h1>
@@ -62,6 +124,49 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ d
             <h3 className="mt-2 text-lg font-bold text-leaf-900">{f.title}</h3>
             <p className="mt-1 text-sm text-muted">{f.body}</p>
           </div>
+        ))}
+      </section>
+
+      <section className="space-y-4">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 className="text-2xl font-bold text-leaf-900">Free plant care guides</h2>
+          <Link href="/plants" className="text-sm font-semibold text-leaf-700 hover:underline">
+            All {LIBRARY.length} plant guides →
+          </Link>
+        </div>
+        <p className="max-w-3xl text-muted">
+          Gardening help for the plants people ask about most: when and how to prune, the right fertilizer, organic sprays,
+          soil and common problems.
+        </p>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {popular.map((g) => (
+            <Link key={g.key} href={`/plants/${g.key}`} className="card flex items-center gap-3 !p-3 transition hover:border-leaf-500">
+              <PlantIcon guide={g} size={36} />
+              <span className="text-sm font-semibold text-leaf-900">How to care for {g.name.split(" / ")[0].toLowerCase()}</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="card flex flex-col gap-3 bg-leaf-50 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h2 className="text-xl font-bold text-leaf-900">{monthName(thisMonth)} gardening tips</h2>
+          <p className="text-sm text-muted">
+            What to prune, feed, spray and protect this month, for cold, moderate and mild climates.
+          </p>
+        </div>
+        <Link href={`/gardening-tips/${thisMonth}`} className="btn shrink-0">
+          See this month&apos;s garden checklist
+        </Link>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-2xl font-bold text-leaf-900">Gardening help, answered</h2>
+        {FAQS.map((f) => (
+          <details key={f.q} className="card">
+            <summary className="font-semibold">{f.q}</summary>
+            <p className="mt-2 text-sm text-muted">{f.a}</p>
+          </details>
         ))}
       </section>
     </div>

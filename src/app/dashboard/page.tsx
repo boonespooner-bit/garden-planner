@@ -8,7 +8,7 @@ import { loadCompletions, loadGarden, scheduleFor } from "@/lib/garden";
 import { bucketSchedule } from "@/lib/schedule";
 import { getForecastSafe } from "@/lib/weather";
 
-export const metadata = { title: "This week" };
+export const metadata = { title: "This week", robots: { index: false, follow: false } };
 
 export default async function Dashboard() {
   const user = await requireOnboardedUser();

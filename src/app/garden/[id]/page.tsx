@@ -8,6 +8,8 @@ import { chillAdvice } from "@/lib/chill";
 import { formatRange } from "@/lib/dates";
 import { loadCompletions, loadGardenEntry, scheduleFor } from "@/lib/garden";
 
+export const metadata = { title: "My plant", robots: { index: false, follow: false } };
+
 export default async function PlantPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const user = await requireOnboardedUser();

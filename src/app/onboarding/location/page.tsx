@@ -3,7 +3,7 @@ import { geocode, placeLabel, type GeocodeResult } from "@/lib/climate";
 import { LocationChoice, UseMyLocation } from "./LocationForms";
 import { Steps } from "@/components/Steps";
 
-export const metadata = { title: "Your location" };
+export const metadata = { title: "Your location", robots: { index: false, follow: false } };
 
 export default async function LocationPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const user = await requireUser();

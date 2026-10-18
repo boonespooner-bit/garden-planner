@@ -1,7 +1,7 @@
 import { redeemLoginAction } from "@/app/actions";
 import { SubmitButton } from "@/components/SubmitButton";
 
-export const metadata = { title: "Sign in" };
+export const metadata = { title: "Sign in", robots: { index: false, follow: false } };
 
 /**
  * The emailed link lands here, and signing in needs one more click. That stops

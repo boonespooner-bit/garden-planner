@@ -7,24 +7,12 @@ import { loadGarden } from "@/lib/garden";
 import { LIBRARY, searchLibrary } from "@/plants";
 import type { PlantCategory, PlantGuide } from "@/plants/types";
 import { PlantIcon } from "@/components/PlantIcon";
+import { CATEGORY_LABELS } from "@/lib/categories";
 import { Steps } from "@/components/Steps";
 import { AddCustomPlant, AddLibraryPlant } from "./AddPlant";
 
-export const metadata = { title: "My plants" };
+export const metadata = { title: "My plants", robots: { index: false, follow: false } };
 
-const CATEGORY_LABELS: Record<PlantCategory, string> = {
-  rose: "Roses",
-  shrub: "Flowering shrubs",
-  evergreen: "Evergreens",
-  tree: "Trees",
-  fruit: "Fruit",
-  nut: "Nut trees",
-  vine: "Vines",
-  perennial: "Perennials & grasses",
-  herb: "Herbs",
-  vegetable: "Vegetables",
-  tropical: "Tropicals",
-};
 
 export default async function GardenPage({ searchParams }: { searchParams: Promise<{ q?: string; welcome?: string }> }) {
   const user = await requireOnboardedUser();

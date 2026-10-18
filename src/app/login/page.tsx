@@ -2,7 +2,11 @@ import { redirect } from "next/navigation";
 import { getCurrentUser, passwordLoginEnabled } from "@/lib/auth";
 import { LoginForm, PasswordLoginForm } from "./LoginForm";
 
-export const metadata = { title: "Sign in" };
+export const metadata = {
+  title: "Sign in or create your free garden plan",
+  description: "Sign up free for a pruning, fertilizing and spraying schedule for your plants, timed to your climate, with a Friday email.",
+  alternates: { canonical: "/login" },
+};
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ expired?: string }> }) {
   if (await getCurrentUser()) redirect("/dashboard");

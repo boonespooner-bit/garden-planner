@@ -6,7 +6,7 @@ import { TASK_LABELS, loadCompletions, loadGarden, scheduleFor } from "@/lib/gar
 import { groupByMonth } from "@/lib/schedule";
 import type { TaskType } from "@/plants/types";
 
-export const metadata = { title: "Calendar" };
+export const metadata = { title: "Calendar", robots: { index: false, follow: false } };
 
 export default async function CalendarPage({ searchParams }: { searchParams: Promise<{ type?: string }> }) {
   const user = await requireOnboardedUser();

@@ -1,13 +1,34 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
+import { siteUrl } from "@/lib/seo";
 import { signOutAction } from "./actions";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: { default: "Tend Weekly", template: "%s · Tend Weekly" },
+  metadataBase: new URL(siteUrl()),
+  title: {
+    default: "Tend Weekly: Gardening Tips & Pruning Schedules for Your Garden",
+    template: "%s | Tend Weekly",
+  },
   description:
-    "Pruning, feeding, spraying and soil schedules for your plants and your climate, with a Friday email so you can plan the weekend.",
+    "Free gardening help: when and how to prune, fertilize and spray every plant in your garden, timed to your local frost dates, with a Friday email that tells you what to do this weekend.",
+  applicationName: "Tend Weekly",
+  keywords: [
+    "gardening tips",
+    "gardening help",
+    "pruning schedule",
+    "when to prune",
+    "how to prune",
+    "plant care guide",
+    "fertilizer schedule",
+    "fruit tree care",
+    "garden calendar",
+    "garden planner",
+  ],
+  openGraph: { type: "website", siteName: "Tend Weekly", locale: "en_US" },
+  twitter: { card: "summary_large_image" },
+  formatDetection: { telephone: false },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -37,14 +58,25 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 </form>
               </nav>
             ) : (
-              <Link href="/login" className="btn">
-                Sign in
-              </Link>
+              <nav className="flex flex-wrap items-center gap-1 text-sm font-semibold">
+                <NavLink href="/plants">Plant guides</NavLink>
+                <NavLink href="/gardening-tips">Gardening tips</NavLink>
+                <Link href="/login" className="btn ml-1">
+                  Sign in
+                </Link>
+              </nav>
             )}
           </div>
         </header>
         <main className="mx-auto max-w-5xl px-4 py-8">{children}</main>
-        <footer className="mx-auto max-w-5xl px-4 pb-10 pt-4 text-xs text-muted">
+        <footer className="mx-auto max-w-5xl space-y-2 px-4 pb-10 pt-4 text-xs text-muted">
+          <nav className="flex flex-wrap gap-x-4 gap-y-1 font-semibold" aria-label="Footer">
+            <Link href="/plants" className="hover:text-leaf-700">Plant care guides</Link>
+            <Link href="/gardening-tips" className="hover:text-leaf-700">Gardening tips by month</Link>
+            <Link href="/plants/bigleaf-hydrangea" className="hover:text-leaf-700">Pruning hydrangeas</Link>
+            <Link href="/plants/hybrid-tea-rose" className="hover:text-leaf-700">Pruning roses</Link>
+            <Link href="/plants/apple" className="hover:text-leaf-700">Fruit tree care</Link>
+          </nav>
           Care advice is general guidance. Always read and follow product labels. Weather data by{" "}
           <a className="underline" href="https://open-meteo.com/">
             Open-Meteo
