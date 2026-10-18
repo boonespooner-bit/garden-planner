@@ -1,4 +1,7 @@
+import fs from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
+import { plantIcon } from "@/plants/icons";
 import { getCuratedGuide, LIBRARY, searchLibrary } from "@/plants";
 import { chillAdvice } from "./chill";
 import { analyzeChill, analyzeClimate, usdaZone } from "./climate";
@@ -25,6 +28,13 @@ describe("plant library", () => {
         expect(t.timing.endWeeks, `${g.key}/${t.id}`).toBeGreaterThanOrEqual(t.timing.startWeeks);
         expect(t.steps.length, `${g.key}/${t.id}`).toBeGreaterThan(0);
       }
+    }
+  });
+
+  it("has a bundled picture for every plant", () => {
+    for (const g of LIBRARY) {
+      const file = path.join(process.cwd(), "public", plantIcon(g).src);
+      expect(fs.existsSync(file), `${g.key} → ${file}`).toBe(true);
     }
   });
 

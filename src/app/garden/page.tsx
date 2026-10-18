@@ -6,6 +6,7 @@ import { formatDate, fromMonthDay } from "@/lib/dates";
 import { loadGarden } from "@/lib/garden";
 import { LIBRARY, searchLibrary } from "@/plants";
 import type { PlantCategory, PlantGuide } from "@/plants/types";
+import { PlantIcon } from "@/components/PlantIcon";
 import { Steps } from "@/components/Steps";
 import { AddCustomPlant, AddLibraryPlant } from "./AddPlant";
 
@@ -68,9 +69,12 @@ export default async function GardenPage({ searchParams }: { searchParams: Promi
           {garden.map((g) => (
             <Link key={g.id} href={`/garden/${g.id}`} className="card block transition hover:border-leaf-500">
               <div className="flex items-start justify-between gap-2">
-                <div>
-                  <div className="font-semibold text-leaf-900">{g.displayName}</div>
-                  <div className="text-xs italic text-muted">{g.guide.botanical}</div>
+                <div className="flex min-w-0 items-center gap-3">
+                  <PlantIcon guide={g.guide} />
+                  <div className="min-w-0">
+                    <div className="font-semibold text-leaf-900">{g.displayName}</div>
+                    <div className="text-xs italic text-muted">{g.guide.botanical}</div>
+                  </div>
                 </div>
                 {g.quantity > 1 && <span className="chip">×{g.quantity}</span>}
               </div>

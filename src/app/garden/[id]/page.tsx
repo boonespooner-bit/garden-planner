@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { removePlantAction, updatePlantAction } from "@/app/actions";
+import { PlantIcon } from "@/components/PlantIcon";
 import { TaskHowTo, TaskTypeChip } from "@/components/TaskCard";
 import { requireOnboardedUser } from "@/lib/auth";
 import { chillAdvice } from "@/lib/chill";
@@ -33,7 +34,10 @@ export default async function PlantPage({ params }: { params: Promise<{ id: stri
         ← My plants
       </Link>
       <header className="space-y-2">
-        <h1 className="text-3xl font-bold text-leaf-900">{entry.displayName}</h1>
+        <h1 className="flex items-center gap-3 text-3xl font-bold text-leaf-900">
+          <PlantIcon guide={guide} size={52} />
+          {entry.displayName}
+        </h1>
         <p className="italic text-muted">
           {guide.botanical}
           {entry.nickname && ` · ${guide.name}`}
